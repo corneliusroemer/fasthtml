@@ -3,33 +3,33 @@
 # %% auto 0
 __all__ = ['marked_imp', 'npmcdn', 'light_media', 'dark_media', 'MarkdownJS', 'KatexMarkdownJS', 'HighlightJS', 'SortableJS']
 
-# %% ../nbs/api/03_js.ipynb
+# %% ../nbs/api/03_js.ipynb 3
 import re
 from fastcore.utils import *
 from fasthtml.components import *
 from fasthtml.xtend import *
 
-# %% ../nbs/api/03_js.ipynb
+# %% ../nbs/api/03_js.ipynb 4
 def light_media(
         css: str # CSS to be included in the light media query
     ):
     "Render light media for day mode views"
     return Style('@media (prefers-color-scheme: light) {%s}' %css)
 
-# %% ../nbs/api/03_js.ipynb
+# %% ../nbs/api/03_js.ipynb 6
 def dark_media(
         css: str # CSS to be included in the dark media query
     ):
     "Render dark media for nught mode views"
     return Style('@media (prefers-color-scheme:  dark) {%s}' %css)
 
-# %% ../nbs/api/03_js.ipynb
+# %% ../nbs/api/03_js.ipynb 8
 marked_imp = """import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
     import { proc_htmx } from "https://cdn.jsdelivr.net/gh/answerdotai/fasthtml-js/fasthtml.js";
 """
 npmcdn = 'https://cdn.jsdelivr.net/npm/'
 
-# %% ../nbs/api/03_js.ipynb
+# %% ../nbs/api/03_js.ipynb 9
 def MarkdownJS(
         sel='.marked' # CSS selector for markdown elements
     ):
@@ -37,7 +37,7 @@ def MarkdownJS(
     src = "proc_htmx('%s', e => e.innerHTML = marked.parse(e.textContent));" % sel
     return Script(marked_imp+src, type='module')
 
-# %% ../nbs/api/03_js.ipynb
+# %% ../nbs/api/03_js.ipynb 12
 def KatexMarkdownJS(
         sel='.marked',  # CSS selector for markdown elements
         inline_delim='$',  # Delimiter for inline math
@@ -52,7 +52,7 @@ def KatexMarkdownJS(
     css = Link(rel="stylesheet", href=npmcdn+"katex@0.16.11/dist/katex.min.css")
     return scr,css
 
-# %% ../nbs/api/03_js.ipynb
+# %% ../nbs/api/03_js.ipynb 15
 def HighlightJS(
         sel='pre code', # CSS selector for code elements. Default is industry standard, be careful before adjusting it
         langs:str|list|tuple='python',  # Language(s) to highlight
@@ -76,7 +76,7 @@ htmx.onLoad(hljs.highlightAll);""" % sel
             light_media('.hljs-copy-button {background-color: #2d2b57;}'),
             *langjs, Script(src, type='module')]
 
-# %% ../nbs/api/03_js.ipynb
+# %% ../nbs/api/03_js.ipynb 16
 def SortableJS(
         sel='.sortable',  # CSS selector for sortable elements
         ghost_class='blue-background-class'  # When an element is being dragged, this is the class used to distingish it from the rest

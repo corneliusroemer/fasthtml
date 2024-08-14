@@ -13,7 +13,7 @@ __all__ = ['named', 'html_attrs', 'hx_attrs', 'show', 'attrmap_x', 'ft_html', 'f
            'Td', 'Template', 'Textarea', 'Tfoot', 'Th', 'Thead', 'Time', 'Title', 'Tr', 'Track', 'U', 'Ul', 'Var',
            'Video', 'Wbr']
 
-# %% ../nbs/api/01_components.ipynb
+# %% ../nbs/api/01_components.ipynb 2
 from dataclasses import dataclass, asdict, is_dataclass, make_dataclass, replace, astuple, MISSING
 from bs4 import BeautifulSoup, Comment
 
@@ -27,28 +27,28 @@ import types, json
 try: from IPython import display
 except ImportError: display=None
 
-# %% ../nbs/api/01_components.ipynb
+# %% ../nbs/api/01_components.ipynb 4
 def show(ft,*rest):
     "Renders FT Components into HTML within a Jupyter notebook."
     if rest: ft = (ft,)+rest
     return display.HTML(to_xml(ft))
 
-# %% ../nbs/api/01_components.ipynb
+# %% ../nbs/api/01_components.ipynb 7
 named = set('a button form frame iframe img input map meta object param select textarea'.split())
 html_attrs = 'id cls title style accesskey contenteditable dir draggable enterkeyhint hidden inert inputmode lang popover spellcheck tabindex translate'.split()
 hx_attrs = 'get post put delete patch trigger target swap include select indicator push_url confirm disable replace_url on'
 hx_attrs = html_attrs + [f'hx_{o}' for o in hx_attrs.split()]
 
-# %% ../nbs/api/01_components.ipynb
+# %% ../nbs/api/01_components.ipynb 8
 def attrmap_x(o):
     if o.startswith('_at_'): o = '@'+o[4:]
     return attrmap(o)
 
-# %% ../nbs/api/01_components.ipynb
+# %% ../nbs/api/01_components.ipynb 9
 fh_cfg['attrmap']=attrmap_x
 fh_cfg['valmap' ]=valmap
 
-# %% ../nbs/api/01_components.ipynb
+# %% ../nbs/api/01_components.ipynb 10
 def ft_html(tag: str, *c, id=None, cls=None, title=None, style=None, attrmap=None, valmap=None, **kwargs):
     if attrmap is None: attrmap=fh_cfg.attrmap
     if valmap  is None: valmap =fh_cfg.valmap
@@ -57,14 +57,14 @@ def ft_html(tag: str, *c, id=None, cls=None, title=None, style=None, attrmap=Non
     if tag in named and 'id' in kw and 'name' not in kw: kw['name'] = kw['id']
     return FT(tag,c,kw, void_=tag in voids)
 
-# %% ../nbs/api/01_components.ipynb
+# %% ../nbs/api/01_components.ipynb 11
 @use_kwargs(hx_attrs, keep=True)
 def ft_hx(tag: str, *c, target_id=None, hx_vals=None, **kwargs):
     if hx_vals: kwargs['hx_vals'] = json.dumps(hx_vals) if isinstance (hx_vals,dict) else hx_vals
     if target_id: kwargs['hx_target'] = '#'+target_id
     return ft_html(tag, *c, **kwargs)
 
-# %% ../nbs/api/01_components.ipynb
+# %% ../nbs/api/01_components.ipynb 15
 _g = globals()
 _all_ = [
     'A', 'Abbr', 'Address', 'Area', 'Article', 'Aside', 'Audio', 'B', 'Base', 'Bdi', 'Bdo', 'Blockquote', 'Body', 'Br',
@@ -77,12 +77,12 @@ _all_ = [
     'Td', 'Template', 'Textarea', 'Tfoot', 'Th', 'Thead', 'Time', 'Title', 'Tr', 'Track', 'U', 'Ul', 'Var', 'Video', 'Wbr']
 for o in _all_: _g[o] = partial(ft_hx, o.lower())
 
-# %% ../nbs/api/01_components.ipynb
+# %% ../nbs/api/01_components.ipynb 16
 def File(fname):
     "Use the unescaped text in file `fname` directly"
     return NotStr(Path(fname).read_text())
 
-# %% ../nbs/api/01_components.ipynb
+# %% ../nbs/api/01_components.ipynb 19
 def _fill_item(item, obj):
     if not isinstance(item,list): return item
     tag,cs,attr = item
@@ -101,20 +101,20 @@ def _fill_item(item, obj):
             if option: option.selected = '1'
     return FT(tag,cs,attr,void_=item.void_)
 
-# %% ../nbs/api/01_components.ipynb
+# %% ../nbs/api/01_components.ipynb 20
 def fill_form(form:FT, obj)->FT:
     "Fills named items in `form` using attributes in `obj`"
     if is_dataclass(obj): obj = asdict(obj)
     elif not isinstance(obj,dict): obj = obj.__dict__
     return _fill_item(form, obj)
 
-# %% ../nbs/api/01_components.ipynb
+# %% ../nbs/api/01_components.ipynb 22
 def fill_dataclass(src, dest):
     "Modifies dataclass in-place and returns it"
     for nm,val in asdict(src).items(): setattr(dest, nm, val)
     return dest
 
-# %% ../nbs/api/01_components.ipynb
+# %% ../nbs/api/01_components.ipynb 24
 def find_inputs(e, tags='input', **kw):
     "Recursively find all elements in `e` with `tags` and attrs matching `kw`"
     if not isinstance(e, (list,tuple)): return []
@@ -128,14 +128,14 @@ def find_inputs(e, tags='input', **kw):
     for o in cs: inputs += find_inputs(o, tags, **kw)
     return inputs
 
-# %% ../nbs/api/01_components.ipynb
+# %% ../nbs/api/01_components.ipynb 28
 def __getattr__(tag):
     if tag.startswith('_') or tag[0].islower(): raise AttributeError
     tag = tag.replace("_", "-")
     def _f(*c, target_id=None, **kwargs): return ft_hx(tag, *c, target_id=target_id, **kwargs)
     return _f
 
-# %% ../nbs/api/01_components.ipynb
+# %% ../nbs/api/01_components.ipynb 29
 _re_h2x_attr_key = re.compile(r'^[A-Za-z_-][\w-]*$')
 def html2ft(html, attr1st=False):
     """Convert HTML to an `ft` expression"""

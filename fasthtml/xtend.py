@@ -6,7 +6,7 @@ __all__ = ['picocss', 'picolink', 'picocondcss', 'picocondlink', 'set_pico_cls',
            'loose_format', 'ScriptX', 'replace_css_vars', 'StyleX', 'On', 'Any', 'Prev', 'Now', 'AnyNow', 'run_js',
            'Titled', 'Socials', 'Favicon', 'jsd', 'clear']
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 2
 from dataclasses import dataclass, asdict
 from typing import Any
 
@@ -19,7 +19,7 @@ from .components import *
 try: from IPython import display
 except ImportError: display=None
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 4
 picocss = "https://cdn.jsdelivr.net/npm/@picocss/pico@latest/css/pico.min.css"
 picolink = (Link(rel="stylesheet", href=picocss),
             Style(":root { --pico-font-size: 100%; }"))
@@ -27,7 +27,7 @@ picocondcss = "https://cdn.jsdelivr.net/npm/@picocss/pico@latest/css/pico.condit
 picocondlink = (Link(rel="stylesheet", href=picocondcss),
                 Style(":root { --pico-font-size: 100%; }"))
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 7
 def set_pico_cls():
     js = """var sel = '.cell-output, .output_area';
 document.querySelectorAll(sel).forEach(e => e.classList.add('pico'));
@@ -45,25 +45,25 @@ new MutationObserver(ms => {
 }).observe(document.body, { childList: true, subtree: true });"""
     return display.Javascript(js)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 10
 @delegates(ft_hx, keep=True)
 def A(*c, hx_get=None, target_id=None, hx_swap=None, href='#', **kwargs)->FT:
     "An A tag; `href` defaults to '#' for more concise use with HTMX"
     return ft_hx('a', *c, href=href, hx_get=hx_get, target_id=target_id, hx_swap=hx_swap, **kwargs)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 12
 @delegates(ft_hx, keep=True)
 def Form(*c, enctype="multipart/form-data", **kwargs)->FT:
     "A Form tag; identical to plain `ft_hx` version except default `enctype='multipart/form-data'`"
     return ft_hx('form', *c, enctype=enctype, **kwargs)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 13
 @delegates(ft_hx, keep=True)
 def AX(txt, hx_get=None, target_id=None, hx_swap=None, href='#', **kwargs)->FT:
     "An A tag with just one text child, allowing hx_get, target_id, and hx_swap to be positional params"
     return ft_hx('a', txt, href=href, hx_get=hx_get, target_id=target_id, hx_swap=hx_swap, **kwargs)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 15
 @delegates(ft_hx, keep=True)
 def Checkbox(checked:bool=False, label=None, value="1", **kwargs)->FT:
     "A Checkbox optionally inside a Label"
@@ -72,7 +72,7 @@ def Checkbox(checked:bool=False, label=None, value="1", **kwargs)->FT:
     if label: res = Label(res, label)
     return res
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 17
 @delegates(ft_hx, keep=True)
 def Card(*c, header=None, footer=None, **kwargs)->FT:
     "A PicoCSS Card, implemented as an Article with optional Header and Footer"
@@ -80,75 +80,75 @@ def Card(*c, header=None, footer=None, **kwargs)->FT:
     if footer: c += (Footer(footer),)
     return Article(*c, **kwargs)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 19
 @delegates(ft_hx, keep=True)
 def Group(*c, **kwargs)->FT:
     "A PicoCSS Group, implemented as a Fieldset with role 'group'"
     return Fieldset(*c, role="group", **kwargs)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 21
 @delegates(ft_hx, keep=True)
 def Search(*c, **kwargs)->FT:
     "A PicoCSS Search, implemented as a Form with role 'search'"
     return Form(*c, role="search", **kwargs)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 23
 @delegates(ft_hx, keep=True)
 def Grid(*c, cls='grid', **kwargs)->FT:
     "A PicoCSS Grid, implemented as child Divs in a Div with class 'grid'"
     c = tuple(o if isinstance(o,list) else Div(o) for o in c)
     return ft_hx('div', *c, cls=cls, **kwargs)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 25
 @delegates(ft_hx, keep=True)
 def DialogX(*c, open=None, header=None, footer=None, id=None, **kwargs)->FT:
     "A PicoCSS Dialog, with children inside a Card"
     card = Card(*c, header=header, footer=footer, **kwargs)
     return Dialog(card, open=open, id=id)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 27
 @delegates(ft_hx, keep=True)
 def Hidden(value:Any="", **kwargs)->FT:
     "An Input of type 'hidden'"
     return Input(type="hidden", value=value, **kwargs)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 28
 @delegates(ft_hx, keep=True)
 def Container(*args, **kwargs)->FT:
     "A PicoCSS Container, implemented as a Main with class 'container'"
     return Main(*args, cls="container", **kwargs)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 29
 @delegates(ft_html, keep=True)
 def Script(code:str="", **kwargs)->FT:
     "A Script tag that doesn't escape its code"
     return ft_html('script', NotStr(code), **kwargs)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 30
 @delegates(ft_html, keep=True)
 def Style(*c, **kwargs)->FT:
     "A Style tag that doesn't escape its code"
     return ft_html('style', map(NotStr,c), **kwargs)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 31
 def double_braces(s):
     "Convert single braces to double braces if next to special chars or newline"
     s = re.sub(r'{(?=[\s:;\'"]|$)', '{{', s)
     return re.sub(r'(^|[\s:;\'"])}', r'\1}}', s)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 32
 def undouble_braces(s):
     "Convert double braces to single braces if next to special chars or newline"
     s = re.sub(r'\{\{(?=[\s:;\'"]|$)', '{', s)
     return re.sub(r'(^|[\s:;\'"])\}\}', r'\1}', s)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 33
 def loose_format(s, **kw):
     "String format `s` using `kw`, without being strict about braces outside of template params"
     if not kw: return s
     return undouble_braces(partial_format(double_braces(s), **kw)[0])
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 34
 def ScriptX(fname, src=None, nomodule=None, type=None, _async=None, defer=None,
             charset=None, crossorigin=None, integrity=None, **kw):
     "A `script` element with contents read from `fname`"
@@ -156,7 +156,7 @@ def ScriptX(fname, src=None, nomodule=None, type=None, _async=None, defer=None,
     return Script(s, src=src, nomodule=nomodule, type=type, _async=_async, defer=defer,
                   charset=charset, crossorigin=crossorigin, integrity=integrity)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 35
 def replace_css_vars(css, pre='tpl', **kwargs):
     "Replace `var(--)` CSS variables with `kwargs` if name prefix matches `pre`"
     if not kwargs: return css
@@ -165,7 +165,7 @@ def replace_css_vars(css, pre='tpl', **kwargs):
         return kwargs.get(var_name, m.group(0))
     return re.sub(fr'var\(--{pre}-([\w-]+)\)', replace_var, css)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 36
 def StyleX(fname, **kw):
     "A `style` element with contents read from `fname` and variables replaced from `kw`"
     s = Path(fname).read_text()
@@ -173,48 +173,48 @@ def StyleX(fname, **kw):
     sty_kw = {k:kw.pop(k) for k in attrs if k in kw}
     return Style(replace_css_vars(s, **kw), **sty_kw)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 37
 def On(code:str, event:str='click', sel:str='', me=True):
     "An async surreal.js script block event handler for `event` on selector `sel`"
     func = 'me' if me else 'any'
     if sel: sel=f'"{sel}"'
     return Script(f'{func}({sel}).on("{event}", async ev=>{{\nlet e = me(ev);\n{code}\n}});\n')
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 38
 def Any(sel:str, code:str, event:str='click'):
     "An `any` async surreal.js script block event handler for `event` on selector `sel`"
     return On(code, event, sel=sel, me=False)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 39
 def Prev(code:str, event:str='click'):
     "An async surreal.js script block event handler for `event` on previous sibling"
     return On(code, event=event, sel='-')
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 40
 def Now(code:str, sel:str=''):
     "An async surreal.js script block on selector `me(sel)`"
     if sel: sel=f'"{sel}"'
     return Script(f'(async (ee = me({sel})) => {{\nlet e = me(ee);\n{code}\n}})()\n')
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 41
 def AnyNow(sel:str, code:str):
     "An async surreal.js script block on selector `any(sel)`"
     return Script(f'(async (e = any("{sel}")) => {{\n{code}\n}})()\n')
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 42
 def run_js(js, id=None, **kw):
     "Run `js` script, auto-generating `id` based on name of caller if needed, and js-escaping any `kw` params"
     if not id: id = sys._getframe(1).f_code.co_name
     kw = {k:dumps(v) for k,v in kw.items()}
     return Script(js.format(**kw), id=id, hx_swap_oob='true')
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 43
 @delegates(ft_hx, keep=True)
 def Titled(title:str="FastHTML app", *args, **kwargs)->FT:
     "An HTML partial containing a `Title`, and `H1`, and any provided children"
     return Title(title), Main(H1(title), *args, cls="container", **kwargs)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 44
 def Socials(title, site_name, description, image, url=None, w=1200, h=630, twitter_site=None, creator=None, card='summary'):
     "OG and Twitter social card headers"
     if not url: url=site_name
@@ -237,13 +237,13 @@ def Socials(title, site_name, description, image, url=None, w=1200, h=630, twitt
     if creator      is not None: res.append(Meta(name='twitter:creator', content=creator))
     return tuple(res)
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 45
 def Favicon(light_icon, dark_icon):
     "Light and dark favicon headers"
     return (Link(rel='icon', type='image/x-ico', href=light_icon, media='(prefers-color-scheme: light)'),
             Link(rel='icon', type='image/x-ico', href=dark_icon, media='(prefers-color-scheme: dark)'))
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 46
 def jsd(org, repo, root, path, prov='gh', typ='script', ver=None, esm=False, **kwargs)->FT:
     "jsdelivr `Script` or CSS `Link` tag, or URL"
     ver = '@'+ver if ver else ''
@@ -251,5 +251,5 @@ def jsd(org, repo, root, path, prov='gh', typ='script', ver=None, esm=False, **k
     if esm: s += '/+esm'
     return Script(src=s, **kwargs) if typ=='script' else Link(rel='stylesheet', href=s, **kwargs) if typ=='css' else s
 
-# %% ../nbs/api/02_xtend.ipynb
+# %% ../nbs/api/02_xtend.ipynb 47
 def clear(id): return Div(hx_swap_oob='innerHTML', id=id)

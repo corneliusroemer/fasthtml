@@ -12,7 +12,7 @@ from .live_reload import FastHTMLWithLiveReload
 # %% auto 0
 __all__ = ['fast_app', 'ContainerX', 'PageX']
 
-# %% ../nbs/api/10_fastapp.ipynb
+# %% ../nbs/api/10_fastapp.ipynb 4
 def _get_tbl(dt, nm, schema):
     render = schema.pop('render', None)
     tbl = dt[nm]
@@ -22,7 +22,7 @@ def _get_tbl(dt, nm, schema):
     if render: dc.__ft__ = render
     return tbl,dc
 
-# %% ../nbs/api/10_fastapp.ipynb
+# %% ../nbs/api/10_fastapp.ipynb 5
 def _app_factory(*args, **kwargs) -> FastHTML | FastHTMLWithLiveReload:
     "Creates a FastHTML or FastHTMLWithLiveReload app instance"
     if kwargs.pop('live', False): return FastHTMLWithLiveReload(*args, **kwargs)
@@ -30,7 +30,7 @@ def _app_factory(*args, **kwargs) -> FastHTML | FastHTMLWithLiveReload:
     kwargs.pop('reload_interval', None)
     return FastHTML(*args, **kwargs)
 
-# %% ../nbs/api/10_fastapp.ipynb
+# %% ../nbs/api/10_fastapp.ipynb 6
 def fast_app(
         db_file:Optional[str]=None, # Database file name, if needed
         render:Optional[callable]=None, # Function used to render default database class
@@ -89,6 +89,6 @@ def fast_app(
     if len(dbtbls)==1: dbtbls=dbtbls[0]
     return app,app.route,*dbtbls
 
-# %% ../nbs/api/10_fastapp.ipynb
+# %% ../nbs/api/10_fastapp.ipynb 7
 def ContainerX(*cs, **kwargs): return Main(*cs, **kwargs, cls='container', hx_push_url='true', hx_swap_oob='true', id='main')
 def PageX(title, *con): return Title(title), ContainerX(H1(title), *con)
